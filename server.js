@@ -8,16 +8,17 @@ import mongoose from "mongoose";
 app.use(express.json());
 app.use("/api", routes)
 
-try {
-    mongoose.connect(
-        MONGO_ATLAS_URL,
-        { useNewUrlParser: true, useUnifiedTopology: true },
-        () => console.log(" Mongoose is connected :>>>🤘😎🤘")
-    );
-} catch (e) {
-    console.log("could not connect", e);
-}
 
+mongoose.connect(MONGO_ATLAS_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+});
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+    console.log('Mongoose is connected :>>>🤘😎🤘');
+});
 
 app.use(errorHandler);
 app.listen(APP_PORT, () => console.log(`server is running on port ::> ${APP_PORT} 🚀❤️‍🔥🚀`))
